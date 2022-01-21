@@ -13,13 +13,15 @@ def config():
     num_workers = 4
     disable_random_resize = False
     jitter = False
+    is_npy = True
     path = 'data'
     split_dir = None
 
 
+
 @dataset_ingredient.capture
 def get_dataloader(split, enlarge, num_workers, batch_size, disable_random_resize,
-                   path, split_dir, jitter, aug=False, shuffle=True, out_name=False,
+                   path, split_dir, jitter, is_npy, aug=False, shuffle=True, out_name=False,
                    sample=None):
     # sample: iter, way, shot, query
     if aug:
@@ -27,7 +29,7 @@ def get_dataloader(split, enlarge, num_workers, batch_size, disable_random_resiz
                                  jitter=jitter)
     else:
         transform = without_augment(84, enlarge=enlarge)
-    sets = DatasetFolder(path, split_dir, split, transform, out_name=out_name)
+    sets = DatasetFolder(path, split_dir, split, transform, is_npy, out_name=out_name)
     if sample is not None:
         sampler = CategoriesSampler(sets.labels, *sample)
         loader = DataLoader(sets, batch_sampler=sampler,

@@ -22,5 +22,5 @@ if __name__ == '__main__':
     data_dir = "data"
     os.makedirs(data_dir, exist_ok=True)
     os.chdir(data_dir)
-    download_data('mini_imagenet')
+    # download_data('mini_imagenet')
     download_data('cub')

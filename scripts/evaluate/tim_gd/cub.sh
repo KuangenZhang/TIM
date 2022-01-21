@@ -1,6 +1,6 @@
 
 # =============> Resnet18 <================
-python3 -m src.main \
+python -m src.main \
 		-F logs/tim_gd/cub/ \
 		with dataset.path="data/cub/CUB_200_2011/images" \
 		ckpt_path="checkpoints/cub/softmax/resnet18" \

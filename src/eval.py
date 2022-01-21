@@ -60,13 +60,11 @@ class Evaluator:
                                                        loaders_dic=loaders_dic)
         results = []
         for shot in shots:
-
             tasks = self.generate_tasks(extracted_features_dic=extracted_features_dic,
                                         shot=shot)
             logs = self.run_task(task_dic=tasks,
                                  model=model,
                                  callback=callback)
-
             l2n_mean, l2n_conf = compute_confidence_interval(logs['acc'][:, -1])
 
             print('==> Meta Test: {} \nfeature\tL2N\n{}-shot \t{:.4f}({:.4f})'.format(
@@ -79,7 +77,8 @@ class Evaluator:
         # Build the TIM classifier builder
         tim_builder = self.get_tim_builder(model=model)
 
-        # Extract support and query
+        # Extract support (s) and query (q)
+        # z: feature vector; y: label
         y_s, y_q = task_dic['y_s'], task_dic['y_q']
         z_s, z_q = task_dic['z_s'], task_dic['z_q']
 
@@ -123,7 +122,6 @@ class Evaluator:
         # First, get loaders
         loaders_dic = {}
         loader_info = {'aug': False, 'shuffle': False, 'out_name': False}
-
         if target_data_path is not None:  # This mean we are in the cross-domain scenario
             loader_info.update({'path': target_data_path,
                                 'split_dir': target_split_dir})
@@ -147,7 +145,8 @@ class Evaluator:
             n_ways : Number of ways for the task
 
         returns :
-            extracted_features_dic : Dictionnary containing all extracted features and labels
+            extracted_features_dic:{'concat_features': [], 'concat_labels': []}:
+            Dictionnary containing all extracted features and labels
         """
 
         # Load features from memory if previously saved ...
@@ -178,6 +177,7 @@ class Evaluator:
             extracted_features_dic = {'concat_features': all_features,
                                       'concat_labels': all_labels
                                       }
+        print(extracted_features_dic['concat_features'].shape, extracted_features_dic['concat_labels'].shape)
         print(" ==> Saving features to {}".format(filepath))
         save_pickle(filepath, extracted_features_dic)
         return extracted_features_dic
@@ -232,6 +232,7 @@ class Evaluator:
                             y_support : torch.tensor of shape [number_tasks, n_ways * shot]
                             y_query : torch.tensor of shape [number_tasks, n_ways * query_shot] }
         """
+        print(shot, number_tasks)
         print(f" ==> Generating {number_tasks} tasks ...")
         tasks_dics = []
         for _ in warp_tqdm(range(number_tasks), False):

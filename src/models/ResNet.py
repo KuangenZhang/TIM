@@ -153,7 +153,7 @@ class ResNet(nn.Module):
                 return x
         if feature:
             x1 = self.fc(x)
-            return x, x1
+            return x, x1 # x is feature, while x1 is the classifier
         x = self.fc(x)
         return x
 

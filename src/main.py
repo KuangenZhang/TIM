@@ -134,5 +134,5 @@ def main(seed, pretrain, resume, evaluate, print_runtime,
             scheduler.step()
 
     # Final evaluation on test set
-    results = evaluator.run_full_evaluation(model=model, model_path=ckpt_path)
+    results = evaluator.run_full_evaluation(model=model, model_path=ckpt_path, callback=callback)
     return results
